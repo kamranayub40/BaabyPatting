@@ -4,15 +4,18 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
   Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; // Assuming you have a library for icons
+import axios from 'axios';
 import { Bold, Medium, Regular } from '../Utils/Fonts/FontFamily';
 import {
   backgroundColor,
   black,
   blue,
   primary,
+  red,
   white,
 } from '../Utils/Colors/Colors';
 import Primary_Button from '../Components/PrimaryButton';
@@ -21,6 +24,54 @@ const HomeScreen = ({ navigation }) => {
   const [selectedSleepButton, setSelectedSleepButton] = useState(null);
   const [selectedCircleButton, setSelectedCircleButton] = useState(null);
   const [selectedSpeedButton, setSelectedSpeedButton] = useState(null);
+  const [loading, setLoading] = useState(false); // Loading state
+  const [isStarted, setIsStarted] = useState(false); // Track if the process is started
+
+  const handleGetStarted = async () => {
+    setLoading(true); // Start loading
+
+    // Constructing the data payload
+    const data = {
+      Cmd: '0x01', // Start command
+      Timer: '0xXX', // Placeholder for the timer value
+      Style: '0xXX', // Placeholder for the style value
+      Speed: '0xXX', // Placeholder for the speed value
+    };
+
+    try {
+      // Sending the data payload
+      const response = await axios.post('http://12.1.1.1/post', data);
+      console.log('Data sent successfully:', response.data);
+      setIsStarted(true); // Update state to indicate process started
+    } catch (error) {
+      console.error('Error sending data:', error);
+    } finally {
+      setLoading(false); // End loading
+    }
+  };
+
+  const handleStop = async () => {
+    setLoading(true); // Start loading
+
+    // Constructing the data payload for stopping
+    const data = {
+      Cmd: '0x02', // Stop command
+      Timer: '0x00',
+      Style: '0x00',
+      Speed: '0x00',
+    };
+
+    try {
+      // Sending the data payload
+      const response = await axios.post('http://12.1.1.1/post', data);
+      console.log('Stop command sent successfully:', response.data);
+      setIsStarted(false); // Reset the state to indicate process stopped
+    } catch (error) {
+      console.error('Error sending stop command:', error);
+    } finally {
+      setLoading(false); // End loading
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -47,10 +98,14 @@ const HomeScreen = ({ navigation }) => {
           ]}
           onPress={() => setSelectedSleepButton('SleepPatter')}
         >
-          <Text style={[
-            styles.buttonText,
-            selectedSleepButton === 'SleepPatter' && styles.selectedButtonText,
-          ]}>SleepPatter</Text>
+          <Text
+            style={[
+              styles.buttonText,
+              selectedSleepButton === 'SleepPatter' && styles.selectedButtonText,
+            ]}
+          >
+            SleepPatter
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -59,10 +114,14 @@ const HomeScreen = ({ navigation }) => {
           ]}
           onPress={() => setSelectedSleepButton('SleepPilllow')}
         >
-          <Text style={[
-            styles.buttonText,
-            selectedSleepButton === 'SleepPilllow' && styles.selectedButtonText,
-          ]}>SleepPilllow</Text>
+          <Text
+            style={[
+              styles.buttonText,
+              selectedSleepButton === 'SleepPilllow' && styles.selectedButtonText,
+            ]}
+          >
+            SleepPilllow
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -71,14 +130,18 @@ const HomeScreen = ({ navigation }) => {
           ]}
           onPress={() => setSelectedSleepButton('SleepSound')}
         >
-          <Text style={[
-            styles.buttonText,
-            selectedSleepButton === 'SleepSound' && styles.selectedButtonText,
-          ]}>SleepSound</Text>
+          <Text
+            style={[
+              styles.buttonText,
+              selectedSleepButton === 'SleepSound' && styles.selectedButtonText,
+            ]}
+          >
+            SleepSound
+          </Text>
         </TouchableOpacity>
       </View>
 
-      <View style={{ flex: 1, backgroundColor: "#cdc9d8", marginTop: 20 }}>
+      <View style={{ flex: 1, backgroundColor: '#cdc9d8', marginTop: 20 }}>
         <View style={styles.rowView}>
           <TouchableOpacity
             style={[
@@ -87,11 +150,19 @@ const HomeScreen = ({ navigation }) => {
             ]}
             onPress={() => setSelectedCircleButton('One')}
           >
-            <Icon name="hand-left-outline" size={20} color={selectedCircleButton === 'One' ? white : black} />
-            <Text style={[
-              styles.circleButtonText,
-              selectedCircleButton === 'One' && styles.selectedButtonText,
-            ]}>One</Text>
+            <Icon
+              name="hand-left-outline"
+              size={20}
+              color={selectedCircleButton === 'One' ? white : black}
+            />
+            <Text
+              style={[
+                styles.circleButtonText,
+                selectedCircleButton === 'One' && styles.selectedButtonText,
+              ]}
+            >
+              One
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -100,11 +171,19 @@ const HomeScreen = ({ navigation }) => {
             ]}
             onPress={() => setSelectedCircleButton('Two')}
           >
-            <Icon name="hand-left-outline" size={20} color={selectedCircleButton === 'Two' ? white : black} />
-            <Text style={[
-              styles.circleButtonText,
-              selectedCircleButton === 'Two' && styles.selectedButtonText,
-            ]}>Two</Text>
+            <Icon
+              name="hand-left-outline"
+              size={20}
+              color={selectedCircleButton === 'Two' ? white : black}
+            />
+            <Text
+              style={[
+                styles.circleButtonText,
+                selectedCircleButton === 'Two' && styles.selectedButtonText,
+              ]}
+            >
+              Two
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -113,11 +192,19 @@ const HomeScreen = ({ navigation }) => {
             ]}
             onPress={() => setSelectedCircleButton('Three')}
           >
-            <Icon name="heart" size={20} color={selectedCircleButton === 'Three' ? white : black} />
-            <Text style={[
-              styles.circleButtonText,
-              selectedCircleButton === 'Three' && styles.selectedButtonText,
-            ]}>Three</Text>
+            <Icon
+              name="heart"
+              size={20}
+              color={selectedCircleButton === 'Three' ? white : black}
+            />
+            <Text
+              style={[
+                styles.circleButtonText,
+                selectedCircleButton === 'Three' && styles.selectedButtonText,
+              ]}
+            >
+              Three
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -129,52 +216,75 @@ const HomeScreen = ({ navigation }) => {
             ]}
             onPress={() => setSelectedSpeedButton('Silow')}
           >
-            <Text style={[
-              styles.buttonText,
-              selectedSpeedButton === 'Silow' && styles.selectedButtonText,
-            {paddingHorizontal:20}  
-
-            ]}>Silow</Text>
+            <Text
+              style={[
+                styles.buttonText,
+                selectedSpeedButton === 'Silow' && styles.selectedButtonText,
+                { paddingHorizontal: 20 },
+              ]}
+            >
+              Silow
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.button,
               selectedSpeedButton === 'Medium' && styles.selectedButton,
-            {paddingHorizontal:20}  
+              { paddingHorizontal: 20 },
             ]}
             onPress={() => setSelectedSpeedButton('Medium')}
           >
-            <Text style={[
-              styles.buttonText,
-              selectedSpeedButton === 'Medium' && styles.selectedButtonText,
-            {paddingHorizontal:20}  
-
-            ]}>Medium</Text>
+            <Text
+              style={[
+                styles.buttonText,
+                selectedSpeedButton === 'Medium' && styles.selectedButtonText,
+                { paddingHorizontal: 20 },
+              ]}
+            >
+              Medium
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.button,
               selectedSpeedButton === 'Fast' && styles.selectedButton,
-            {paddingHorizontal:20}  
-
+              { paddingHorizontal: 20 },
             ]}
             onPress={() => setSelectedSpeedButton('Fast')}
           >
-            <Text style={[
-              styles.buttonText,
-              selectedSpeedButton === 'Fast' && styles.selectedButtonText,
-            ]}>Fast</Text>
+            <Text
+              style={[
+                styles.buttonText,
+                selectedSpeedButton === 'Fast' && styles.selectedButtonText,
+              ]}
+            >
+              Fast
+            </Text>
           </TouchableOpacity>
         </View>
-        <View style={{alignSelf:"center",marginTop:20}}>
-
-        <Primary_Button
-            backgroundColor={primary}
-            Text_color={white}
-            Button_Title={'Get Started'}
-            onPress={() => navigation.navigate('ProductSelectScreen')}
+        <View style={{ alignSelf: 'center', marginTop: 20 }}>
+          {isStarted ? (
+            <Primary_Button
+              backgroundColor={red} // Change to red background
+              Text_color={white}
+              Button_Title={'Stop'} // Change button title to 'Stop'
+              onPress={handleStop} // Call handleStop function on press
             />
-            </View>
+          ) : (
+            <Primary_Button
+              backgroundColor={primary}
+              Text_color={white}
+              Button_Title={'Get Started'}
+              onPress={handleGetStarted}
+            />
+          )}
+        </View>
+
+        {loading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={primary} />
+          </View>
+        )}
       </View>
     </View>
   );
@@ -281,6 +391,12 @@ const styles = StyleSheet.create({
     color: primary,
     fontSize: 15,
     fontFamily: Medium,
+  },
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
